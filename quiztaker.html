@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+		<!-- Quiz Taker Page - started by Ariana
+				 1. there should be a horizontal bar at the beginning of the document (possibly fixed), where the
+						user can scroll through quiz problems
+				 2. the various boxes representing the different problems will light up with different colors,
+					  depending on the progress
+				 3. once the quiz is done, the user can click the submit button and verify that he or she wants to
+				    turn it in
+		-->
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+		<title>Quiz Taker</title>
+		<!-- a little css to make things look a little prettier
+			 1. remove underlines from links
+			 2. add borders around links to mimic buttons (to be done in css)
+			 3. CSS snitched from Joshua to standardize the page with the quizmaker one -->
+		<link rel="stylesheet" type="text/css" href="css/taker.css">
+		<script type="text/template" id="tmpl_multiplechoice">
+			<span  id="p{{id}}" style="width:10px" class="push">&nbsp;</span>
+            <div class="multipleChoice">
+                <p id="q{{id}}">
+					<a id="q{{id}}check" class="tip">
+                  <img class='bookmarkImg' src="img/greybookmark.png" alt="{{id}}">
+                  <img class='bookmarkedImg' src="img/bookmark.png" alt="{{id}}">
+						<span>Bookmark this question? </span>
+					</a> 
+					{{id}}. {{question_prompt}}
+				</p>
+				<div id="ans{{id}}"></div>
+			</div>
+		</script>
+    
+		<script type="text/template" id="tmpl_multiplechoice_answer">
+            <label for="q{{id}}a{{answer}}"><div class="mc"><input type="radio" name="q{{id}}a" id="q{{id}}a{{answer}}" value="{{answer}}"> {{answer}}</div></label>
+		</script>
+		
+		<script type="text/template" id="tmpl_truefalse">
+			<span  id="p{{id}}" style="width:10px" class="push">&nbsp;</span>
+            <div class="trueFalse">
+				<p id="q{{id}}">
+					<a id="q{{id}}check" class="tip">
+                  <img class='bookmarkImg' src="img/greybookmark.png" alt="{{id}}">
+                  <img class='bookmarkedImg' src="img/bookmark.png" alt="{{id}}">
+						<span>Bookmark this question?</span>
+					</a> 
+					{{id}}. {{question_prompt}}
+				</p>
+                <label for="q{{id}}at"><div class="mc"><input type="radio" name="q{{id}}a" id="q{{id}}at" value="true"> True</div></label>
+            <label for="q{{id}}af"><div class="mc"><input type="radio" name="q{{id}}a" id="q{{id}}af" value="false"> False</div></label>
+			</div>
+		</script>
+		
+		<script type="text/template" id="tmpl_fillin">
+			<span  id="p{{id}}" style="width:10px" class="push">&nbsp;</span>
+            <div class="fillIn">
+				<p id="q{{id}}">
+					<a id="q{{id}}check" class="tip">
+                  <img class='bookmarkImg' src="img/greybookmark.png" alt="{{id}}">
+                  <img class='bookmarkedImg' src="img/bookmark.png" alt="{{id}}">
+						<span>Bookmark this question?</span>
+					</a> 
+					{{id}}. {{question_prompt}}
+				</p>
+			</div>
+		</script>
+    
+    <script type="text/template" id="tmpl_fillintextbox">
+			<input type="text" class="fillInTextBox" name="q{{id}}_fillIn[]" size="15" />
+		</script>
+		
+      <script type="text/template" id="tmpl_shortanswer">
+         <span  id="p{{id}}" style="width:10px" class="push">&nbsp;</span>
+            <div class="shortAnswer">
+            <p id="q{{id}}">
+               <a id="q{{id}}check" class="tip">
+                  <img class='bookmarkImg' src="img/greybookmark.png" alt="{{id}}">
+                  <img class='bookmarkedImg' src="img/bookmark.png" alt="{{id}}">
+                  <span>Bookmark this question?</span>
+               </a> 
+               {{id}}. {{question_prompt}}
+            </p>
+                <textarea id="q{{id}}a" rows="13"></textarea>
+         </div>
+      </script>
+      
+      <script type="text/template" id="tmpl_section">
+          <div id="{{id}}_section" class="section">
+             <p class="section_instructions">{{instructions}}</p>
+          </div>
+      </script>
+	</head>
+	<body>
+        <header>
+			<h1><img src="img/quill.png" alt="QuizMaker Logo Icon" />QuizTaker<a href="http://ucsd-cse-134.github.io/group21/" target="_blank"><span id="teampage">Teampage: Code 418</span></a></h1>
+         
+			<h2 id="quiz_title">
+			</h2>
+			
+			<select id="display_group" title="Display Group">
+				<option>All Questions</option>
+				<option>Unanswered Questions</option>
+				<option>Bookmarked Questions</option>
+			</select>
+        </header>
+		
+		<aside>
+		  <!--
+		  Question Types - This menu provides the various question type controls
+		  that the user can select to include in the quiz. The questions may be clicked
+		  and dragged onto the question board, where the user may edit and reorder the
+		  questions.
+		  -->
+		
+		  <menu id="qt">
+			<li id="nav1" class="blank">
+			  <a href="#">&nbsp;</a>
+			  <span class="bookmark" title="Bookmark Question"></span>
+			  <span id="up" title="Previous Questions"></span>
+			</li>
+			<li id="nav2" class="blank">
+			  <a href="#">&nbsp;</a>
+			  <span class="bookmark" title="Bookmark Question"></span>
+			</li>
+			<li id="nav3" class="blank">
+			  <a href="#">&nbsp;</a>
+			  <span class="bookmark" title="Bookmark Question"></span>
+			</li>
+			<li id="nav4" class="blank">
+			  <a href="#">&nbsp;</a>
+			  <span class="bookmark" title="Bookmark Question"></span>
+			</li>
+			<li id="nav5" class="blank">
+			  <a href="#">&nbsp;</a>
+			  <span class="bookmark" title="Bookmark Question"></span>
+			  <span id="down" title="Next Questions"></span>
+			</li>
+		  </menu>
+			<h2 class="time_limit_heading blue_heading">Time Left</h2>
+			<p id="time_limit" class="blue_body">
+			00:30:00
+			</p>
+
+			<h2 class="time_limit_heading blue_heading">Answered</h2>
+			<p id="allocated_points" class="blue_body">
+			<span id="answeredQuestions">0</span>/<span id="totalQuestions">0</span>
+			</p>
+			
+			<h2 id="help" style="cursor: pointer;" class="time_limit_heading blue_heading">
+		Need help?
+			<span class="h_keyboard">Esc (close)</span>
+      <span class="help_arrow hover_fadein" title="Click to get more information about this app."></span>
+		</h2>
+		
+		<div id="dialog">
+        <a id="close" class="hover_fade"></a>
+				<div id="closeBG"></div>
+        <div id="instructions">
+					<ul>
+						<li>Finished questions are marked in green.</li>
+						<li>Unfinished question remain blue.</li>
+						<li>Any questions you may about the contents of the quiz should be directed at your professor.</li>
+					</ul>
+				</div>
+		</div>
+		
+		  <a class="blue_heading button">Submit &#x2713;</a>
+		  
+		</aside>
+		
+        <div id="container">
+        <!-- This area should remain at its position. -->
+
+        <!-- begin actual test questions -->
+        <div id="sections">
+
+        </div> <!-- for sections -->
+        </div> <!-- for container -->
+		
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery-ui.min.js"></script>
+		<script src="js/quiztaker.js"> </script>
+	</body>
+</html>

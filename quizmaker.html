@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Quiz Maker</title>
+
+  <link rel="stylesheet" href="css/quizmaker.css"/>
+
+  <script type="text/template" id="tmpl_multiplechoice_option">
+    <li>
+      <input type="checkbox" name="question_1_allow_multiple"
+             id="question_1_allow_multiple" value="true"/>
+      <label for="question_1_allow_multiple"></label>
+      <span class="smaller">Allow more than one answer.</span>
+    </li>
+  </script>
+
+  <script type="text/template" id="tmpl_multiplechoice_answer">
+    <li id="{{id}}_{{value}}_choice_d">
+		  <a class="move_answer faint"></a>
+		  &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="checkbox"
+             name="question_1_answer"
+             id="{{id}}_{{value}}"
+             value="{{value}}"/>
+      <label class="hidden_text" for="{{id}}_{{value}}">
+        Check this box to mark as a correct choice.
+      </label>
+
+      <label class="invisible" for="{{id}}_{{value}}_answerText">
+        Textual content for choice 1.
+      </label>
+      <input type="text"
+             id="{{id}}_{{value}}_answerText"
+             name="answer"
+             class="no_border choice required"
+             placeholder="Click here to edit choice."
+             value="{{answerText}}"/><a class="delete_choice faint" id="{{id}}_{{value}}_choice" title="Delete Choice"></a>
+    </li>
+  </script>
+
+  <script type="text/template" id="tmpl_truefalse_answer">
+    <li>
+      <input type="radio"
+             value="{{value}}"
+             name="question_2_answer"
+             id="{{id}}_{{value}}"/>
+      <label class="hidden_text" for="{{id}}_{{value}}">{{answerText}}</label>
+      <span class="smaller">{{answerText}}</span>
+    </li>
+  </script>
+
+  <script type="text/template" id="tmpl_multiplechoice">
+    <li class="question" id="{{id}}">
+      <a class="delete_question faint" title="Delete"></a>
+      <a class="move_question faint" title="Reorder question by dragging"></a>
+      <span class="points"><input id="{{id}}_points" class="cleanInput" value="{{points}}" type="number" onkeypress="return isNumber(event)" required /> pts</span>
+
+      <form class="multiple_choice">
+
+        <textarea title="Question prompt."
+                  class="cleanInput q_prompt"
+                  name="prompt1"
+                  id="{{id}}_prompt"
+                  placeholder="Click here to edit the question prompt." required>{{prompt}}</textarea>
+
+        <fieldset class="answers">
+          <legend>choices (check the correct answers)</legend>
+          <ul id="{{id}}_answers" style="margin-bottom: 1em;">
+          </ul>
+          <a class="plus_button faint" id="{{id}}_addChoice">Add Another Choice</a>
+        </fieldset>
+
+        <fieldset class="options">
+          <legend>options</legend>
+
+          <ul id="{{id}}_options">
+            <li>
+              <input type="checkbox" name="{{id}}_allow_multiple"
+                     id="{{id}}_allow_multiple" value="true"/>
+              <label for="{{id}}_allow_multiple"></label>
+              <span class="smaller">Allow more than one answer.</span>
+            </li>
+            <li>
+              <input type="checkbox" name="{{id}}_randomize"
+                     id="{{id}}_randomize" value="true"/>
+              <label for="{{id}}_randomize"></label>
+              <span class="smaller">Randomize order of displayed choices.</span>
+            </li>
+          </ul>
+        </fieldset>
+      </form>
+    </li>
+  </script>
+
+  <script type="text/template" id="tmpl_truefalse">
+    <li class="question" id="{{id}}">
+      <a class="delete_question faint" title="Delete"></a>
+      <a class="move_question faint"></a>
+      <span class="points"><input class="cleanInput" value="{{points}}" id="{{id}}_points" type="number" onkeypress="return isNumber(event)" required /> pts</span>
+
+      <form class="true_false">
+
+        <textarea title="Question prompt."
+                  class="cleanInput q_prompt"
+                  name="prompt2"
+                  id="{{id}}_prompt"
+                  placeholder="Click here to edit the question prompt." required>{{prompt}}</textarea>
+
+        <fieldset class="answers">
+          <legend>choices (mark the correct answer)</legend>
+          <ul id="{{id}}_answers"></ul>
+        </fieldset>
+      </form>
+    </li>
+  </script>
+
+  <script type="text/template" id="tmpl_fillin">
+    <li class="question" id="{{id}}">
+      <a class="delete_question faint" title="Delete"></a>
+      <a class="move_question faint"></a>
+      <span class="points"><input class="cleanInput" value="{{points}}" id="{{id}}_points" type="number" onkeypress="return isNumber(event)" required /> pts</span>
+
+      <form class="fill_in">
+        <textarea title="Question prompt."
+                  class="cleanInput q_prompt"
+                  name="prompt4"
+                  id="{{id}}_prompt"
+                  placeholder="Click here to edit the question prompt." required>{{prompt}}</textarea>
+        <div>
+          <a class="plus_button faint" id="{{id}}_add_fillin">Add Fill-in Area at Cursor</a>
+        </div>
+      </form>
+    </li>
+  </script>
+
+  <script type="text/template" id="tmpl_shortanswer">
+    <li class="question" id="{{id}}">
+      <a class="delete_question faint" title="Delete"></a>
+      <a class="move_question faint"></a>
+      <span class="points"><input class="cleanInput" value="{{points}}" id="{{id}}_points" type="number" onkeypress="return isNumber(event)" required /> pts</span>
+
+      <form class="short_answer" id="question_3">
+        <textarea title="Question prompt."
+                  class="cleanInput q_prompt"
+                  name="prompt3"
+                  id="{{id}}_prompt"
+                  placeholder="Click here to edit the question prompt." required>{{prompt}}</textarea>
+
+        <label title="Answer text area." id="question_3_answer">
+          <textarea class="answer" placeholder="You don't have to input an answer key for this question!"></textarea>
+        </label>
+
+        <br>
+        <br>
+        Min Word:
+        <input type="number" class="word_count cleanInput" title="Minimum word count" name="mincount"
+               placeholder="25" onkeypress="return isNumber(event)" required/>
+        Max Word:
+        <input type="number" class="word_count cleanInput" title="Maximum word count" name="maxcount"
+               placeholder="500" onkeypress="return isNumber(event)" required/>
+      </form>
+    </li>
+  </script>
+
+  <script type="text/template" id="tmpl_section">
+    <li class="section" id="{{id}}">
+      <a class="delete_section faint" title="Delete"></a>
+      <a class="move_section faint"></a>
+      <form class="section_divider">
+        <textarea title="Instructions"
+                  class="s_instructions"
+                  id="{{id}}_instructions"
+                  placeholder="Click here to add instructions to this section.">{{instructions}}</textarea>
+      </form>
+      <ol id="{{id}}_qsection" class="questionSort dropZone">
+      </ol>
+    </li>
+  </script>
+  
+  <script type="text/template" id="tmpl_mini_section">
+   <li class="mini_section" id="{{id}}_mini_section">
+   </li>
+  </script>
+
+</head>
+<body>
+<header>
+  <h1><img src="img/quill.png" alt="QuizMaker Logo Icon"/>QuizMaker<a href="http://ucsd-cse-134.github.io/group21/" target="_blank"><span id="teampage">Teampage: Code 418</span></a></h1>
+  
+
+  <input type="text" class="cleanInput" id="quiz_title" placeholder="Quiz Title (click to edit)"/>
+
+  <a id="preview">
+	Preview Quiz
+	<span id="prev_keyboard">Ctrl+Shift+X</span>
+  </a>
+</header>
+	<aside>
+	  <!--
+	  Question Types - This menu provides the various question type controls
+	  that the user can select to include in the quiz. The questions may be clicked
+	  and dragged onto the question board, where the user may edit and reorder the
+	  questions.
+	  -->
+	  <menu id="qt">
+		<li id="qt_multipleChoice" draggable="true">
+		  Multiple Choice
+		  <span class="q_keyboard">Ctrl+Shift+1</span>
+		  <span class="add_qt hover_fadein"
+				title="Add new multiple choice question."></span>
+		</li>
+
+		<li id="qt_trueFalse" draggable="true">
+		  True/False
+		  <span class="q_keyboard">Ctrl+Shift+2</span>
+		  <span class="add_qt hover_fadein"
+				title="Add new true/false question."></span>
+		</li>
+
+		<li id="qt_fillIn" draggable="true">
+		  Fill-in
+		  <span class="q_keyboard">Ctrl+Shift+3</span>
+		  <span class="add_qt hover_fadein"
+				title="Add new fill-in question."></span>
+		</li>
+
+      <li id="qt_shortAnswer" draggable="true">
+        Short Answer
+        <span class="q_keyboard">Ctrl+Shift+4</span>
+        <span class="add_qt hover_fadein"
+            title="Add new short answer question."></span>
+      </li>
+      
+      <li id="qt_section" draggable="true">
+        New Section
+        <span class="q_keyboard">Ctrl+Shift+5</span>
+        <span class="add_qt hover_fadein"
+            title="Add a new section."></span>
+      </li>
+	  </menu>
+
+	  <h2 class="time_limit_heading blue_heading">Time Limit</h2>
+
+	  <p id="time_limit" class="blue_body">
+		<span id="hours"><input type="text" class="cleanInput" value="00" style="width: 40px; font-weight: 100; text-align:center;" onkeypress="return isNumber(event)" required/></span>:<span id="minutes"><input type="text"
+		class="cleanInput" value="30" style="width: 40px; font-weight: 100; text-align:center;" onkeypress="return isNumber(event)" required/></span>:<span id="seconds"><input type="text"
+		class="cleanInput" value="00" style="width: 40px; font-weight: 100; text-align:center;" onkeypress="return isNumber(event)" required/></span>
+	  </p>
+
+	  <h2 class="time_limit_heading blue_heading">Allocated Points</h2>
+
+	  <p id="allocated_points" class="blue_body">
+		<span id="points_total">0</span> / <span id="goal_points_container"><input type="number" class="cleanInput"
+				  title="Set desired point target." value="100" style="width: 75px; font-weight: 100;" id="goal_points" onkeypress="return isNumber(event)" required /></span>
+	  </p>
+		
+		<h2 id="help" style="cursor: pointer;" class="time_limit_heading blue_heading">
+		Need help?
+			<span class="h_keyboard">Ctrl+Shift+Q (o)/Esc (e)</span>
+      <span class="help_arrow hover_fadein" title="Click to get more information about this app."></span>
+		</h2>
+		<div id="dialog">
+        <a id="close" class="hover_fade"></a>
+				<div id="closeBG"></div>
+        <div id="instructions">
+					<ul>
+						<li>The sidebar to your right contains three main sections:
+								<ul style="list-style-type:circle;">
+										<li>types of questions</li>
+										<li>quiz timer</li>
+										<li>and quiz points.</li>
+								</ul>
+						</li>
+						<li>Click on any of the questions types to add one to the quiz. Once they've been added in, you can edit, delete, or rearrange the questions (or the answers, if you're working on a multiple choice question), assign points to them, and indicate the correct answers to the problems.</li>
+						<li>As we have no good way for grading the short answer questions, you'll have to grade those yourself...</li>
+						<li>The quiz timer's format is hours:minutes:seconds.</li>
+						<li>The point counter's format is amount of points assigned/amount of points you want to assign. Only the denominator is editable. The app will calculate how many points you've assigned automatically.</li>
+					</ul>
+				</div>
+		</div>
+
+		<a href="#" class="blue_heading" id="load_button">Load &#8650;
+			<span id="load_keyboard">Ctrl+Shift+L</span>
+		</a>
+
+	  <a href="#" class="blue_heading" id="save_button">Save &#x2713;
+		  <span id="save_keyboard">Ctrl+Shift+S</span>
+	  </a>
+	</aside>
+
+	<section id="qs_container">
+   <a href="#" class="blue_heading faint" id="page_button" title="Click here to switch to page view.">Page View</a>
+   <span id="text_q_page">Total Questions Per Page: <input type="number" id="q_page" onkeypress="return isNumber(event)" value="5"/></span>
+   <ol id="page_num">
+      <li class="current_page pages">1</li>
+   </ol>
+	<!--
+	Question Board - This is where the user will drag question types controls.
+	Once a question has been inserted in the Question Board, the user may edit
+	or reorder the questions.
+	-->
+   <!-- <ol id="mini_qs">
+   </ol>-->
+   <ol id="qs">
+      
+   </ol>
+	</section>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/jquery.validate.js"></script>
+<script src="js/jquery.mockjax.js"></script>
+<script src="js/additional-methods.js"></script>
+<script src="js/jquery.autosize-min.js"></script>
+<script src="js/jquery.hotkeys.min.js"></script>
+<script src="js/quizmaker.js"> </script>
+
+  <script>
+  </script>
+</body>
+</html>

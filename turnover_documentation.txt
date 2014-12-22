@@ -1,0 +1,133 @@
+================================================================================
+                   Group 21 Artifact Handoff Documentation
+================================================================================
+
+                              Group Members:
+
+   Jack Tomlinson | Joshua Toenyes | Kenneth Truong | Ariana Tsai | Andy Tse
+
+================================================================================
+
+- TOC -
+
+  I.   Overall System Architecture
+  II.  App Controller
+  III. Template System
+  IV.  Model Objects
+  V.   Library Usage
+  VI.  Quiz JSON Schema
+  VII. Application TODO's
+
+
+================================================================================
+
+
+I   - Overall System Architecture ----------------------------------------------
+
+The Quiz system is essentially divided into two logical portions: the QuizMaker
+and the QuizTaker. The QuizMaker is responsible for creating and saving quizzes
+to browser local storage, and loading from local storage. Quizzes are stored
+using standard JSON. See section VI for Quiz JSON storage schema.
+
+The system is designed using a standard MVC architecture. The controller
+consists of the appController object. The view consists of the main QuizMaker
+or QuizTaker html documents, which are dynamically modified using embedded
+partial templates in the <head>. See sections II, and III for more information
+on the appController object and the template system.
+
+
+
+II  - App Controller  ----------------------------------------------------------
+
+The App Controller is a singleton object globally accessible via the
+`appController` object. It is responsible for add questions to the question
+board, deleting questions, clearing the question board, loading questions
+from serialized quiz JSON, and saving quizzes to JSON. Additionally, it tracks
+the goal quiz points, the current number of points allocated, the quiz title,
+and the questions currently on the question-board.
+
+
+
+III - Template System ----------------------------------------------------------
+
+Templates for each question type, and in some instances each individual answer
+or option, are stored in <script> tags within the <head>. The various question
+objects are capable of retrieving the template for the corresponding question
+type, parsing it, and returning it to the App Controller for appending to the
+question board.
+
+To facilitate unique identification of each individual question, as well as
+their individual controls, a unique identifier is prepended to the beginning
+of ID's for each question. Event binding for individual questions is then
+accomplished using this unique ID. The model and app controller then 
+store references to that questions model and view component using that ID.
+
+
+
+IV  - Model Objects ------------------------------------------------------------
+
+All question types have an associated instantiable object, MultipleChoice,
+TrueFalse, FillIn, and ShortAnswer. All type extend the generic Question type
+using prototypal inheritance. All questions have references to the associated
+view element, the number of points assigned to that question, the prompt
+text, its ID, and the template html string. Additionally, some question
+types have additional information that they store, for example, the 
+MultipleChoice questions also store Answer objects which represent a choice.
+
+Answer objects contain answer text, an associated value, and a flag indicating
+if that particular choice is correct.
+
+
+
+V  - Library Usage -------------------------------------------------------------
+
+The following libraries are in use:
+
+jQuery          - Generic Javascript library for element targeting and event
+                  management.
+              
+jQuery Validate - Used for validating QuizMaker user input.
+
+jQuery Autosize - Used for dynamically resizing prompt input fields to 
+                  accommodate user input.
+
+jQuery UI       - Used for reordering questions and options and modal windows.
+
+jQuery Hotkeys  - Used for keyboard shortcuts.
+
+
+
+VI   - Quiz JSON Schema --------------------------------------------------------
+
+Quiz information is stored and retrieved using JSON as the serialization method.
+Below is the schema:
+
+{
+  title: {string},
+  points: {number},
+  goalPoints: {number},
+  questions: {Object.<number, Question>}
+}
+
+
+
+VII   - Application TODO's -----------------------------------------------------
+
+QuizTaker Question Filtering -
+
+It was our original intention to add a filtering mechanism to the QuizTaker
+page. There would be a drop-down box (that was mocked-up in homeworks 1-3) that
+would allow the user to filter the questions based on if they were unanswered,
+or bookmarked.
+
+System Architecture -
+
+Currently, the system is fairly fragmented between the QuizMaker side and the
+QuizTaker side. This is problematic for styling and programming updates, since
+most update need to be made on both. These two should be merged using the
+framework provided in quizmaker.js, and the styling in quizmaker.css.
+
+Performance Considerations -
+
+To increase performance, Javascript files should be merged and minimized to
+reduce server round-trips.

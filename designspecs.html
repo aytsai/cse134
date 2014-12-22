@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Design Specs</title>
+    <style>
+        body { background-color: black; font-family: 'Helvetica Neue', 'Arial', sans-serif; text-align:justify; }
+        #center { background-color: white; width:500px; margin-left: auto; margin-right: auto; }
+        * { margin:0; }
+        body, html{ height:100%;}
+        hr { border-top: 13px dotted #000; color: #fff;
+             background-color: #fff; height: 1px; width: 100%; margin-top:5px;
+         }
+        h2 { text-align: right; margin-top:10px; align: right; margin-bottom: 5px; font-style: italic; }
+        .emphasize { display: inline; }
+        ol {text-align: left;}
+    </style>
+</head>
+<body>
+<div id="center">
+    <p style="font-family: impact;font-size:35px; text-align: center;"><img src="http://ucsd-cse-134.github.io/group21/img/teapot.png" height="147" width="191" alt=""><br>
+    Design Specs for Code 418</p>
+    <hr>
+    <h2>overview & requirements</h2>
+    <p>Code 418's website will be a website that provides a QuizMaker and a QuizTaker where the user (Professor) will be able to create a quiz where his students will be able to take the quiz using our QuizTaker. The Client wants to save time in making quizzes for his classes and so he wants a website that will help save time by making it easier to make his quizzes. He also wants his students to have an easy time taking the quiz so they do not complain about having to go back to his typical printed quizzes. This means that Code 418's QuizMaker and QuizTaker will have to make creating the quizzes easy while also providing easy functionality for quiz taking.</p>
+    <hr>
+    <h2>audience</h2>
+    <h3 class="emphasize">Professors...</h3> are getting busier with their lives, and they want to be able to save time when they make quizzes for their students. Also, the rate of cheating has been going up during quiz taking so the professor might want to be able to have a functionality that will randomize the order of questions and answers for the quiz taker. We aim to create an intuitive and simple interface so that the professor spends as little time as possible adjusting to the new quiz making controls. Our website will provide everything they need in order for them to save time in making their quizzes.<br>
+    <h3 class="emphasize">Students...</h3> have been complaining about the functionality of TED and other online test taking websites. Students have been wanting a new quiz taking website that will have them in mind and since we, the web designers, are also students, we're able to understand what they would want in a test taker.
+    <hr>
+    <h2>functionality</h2>
+    <h3>QuizMaker</h3>
+        <ol>
+            <li>Toolbar on side with choices of dragging types of questions onto droppable</li>
+            <li>Once question type is selected options for the question comes up (Question is filled in first)
+                <ol type="a"><li>Multiple Choice
+                        <ol type="i">
+                            <li>Will be able to add selectable answers </li>
+                            <li>Will be able to have multiple right answers by having check boxes next to the answer (Professor can select checkbox if its the correct answer)</li>
+                        </ol></li>
+                    <li>True/False
+                        <ol type="i"><li>Professor click on answer and will highlight in green for correct answer</li></ol></li>
+                    <li>Fill in within a sentence
+                    <ol type="i"><li>Will be able to drag the fill-in around the sentence and also scale the width of the fill-in</li></ol></li>
+                    <li>Fill-in after a sentence</li>
+                    <li>Short answer
+                        <ol type="i"><li>Scalable textbox</li></ol></li>
+                 </ol></li>
+            <li>Ability to delete answers or questions</li>
+            <li>Ability to re-order the questions with drag/drop</li>
+            <li>Ability to have randomized order of question/answer with click of a button</li>
+        </ol>
+        <br>
+        <h3>QuizTaker</h3>
+        <ol>
+            <li>Navigation bar always on top of page for the questions.
+            <ol type="a">
+                <li>Show which questions are answered (Green)</li>
+                <li>Show which questions are unanswered (Red)</li>
+                <li>Each question have the option of selecting a checkable box that will let the user know they want to go back to that question in the navigation bar (Yellow)</li></ol></li>
+        <li>Be able to have option of showing only Red and Yellow questions in a group (Button on Navigational bar “Display all marked/unanswered questions” or “Display all unanswered questions”)</li>
+        <li>Be able to swipe through questions for ease of use on tablets</li>
+        <li>Have a up or down button next to question to jump to previous or next question</li></ol>
+</div>
+</body>
+</html>
